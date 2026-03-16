@@ -1,0 +1,94 @@
+name: people_analytics_dwh
+version: "1.0.0"
+config-version: 2
+
+profile: people_analytics
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+seeds:
+  people_analytics_dwh:
+    raw_employees:
+      +column_types:
+        employee_id: integer
+        birth_date: date
+        hire_date: date
+        termination_date: date
+        job_level: integer
+        manager_id: integer
+        base_annual_salary: double
+        is_active: boolean
+    raw_absences:
+      +column_types:
+        absence_id: integer
+        employee_id: integer
+        absence_date: date
+        hours_absent: double
+        is_approved: boolean
+    raw_payroll:
+      +column_types:
+        payroll_id: integer
+        employee_id: integer
+        pay_period_start: date
+        pay_period_end: date
+        base_salary: double
+        overtime_pay: double
+        bonus: double
+        deductions: double
+        net_pay: double
+    raw_promotions:
+      +column_types:
+        promotion_id: integer
+        employee_id: integer
+        promotion_date: date
+        previous_job_level: integer
+        new_job_level: integer
+        salary_change_pct: double
+    raw_training:
+      +column_types:
+        training_id: integer
+        employee_id: integer
+        start_date: date
+        completion_date: date
+        hours: double
+        score: double
+        is_mandatory: boolean
+    raw_surveys:
+      +column_types:
+        survey_id: integer
+        employee_id: integer
+        survey_date: date
+        engagement_score: double
+        satisfaction_score: double
+        manager_score: double
+        growth_score: double
+        wellbeing_score: double
+        overall_score: double
+    raw_recruiting:
+      +column_types:
+        application_id: integer
+        job_level: integer
+        application_date: date
+        screening_date: date
+        interview_date: date
+        offer_date: date
+        hire_date: date
+        rejection_date: date
+
+models:
+  people_analytics_dwh:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts

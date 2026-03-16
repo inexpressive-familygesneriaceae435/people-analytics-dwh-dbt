@@ -1,0 +1,37 @@
+services:
+  pipeline:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: people-analytics-pipeline
+    volumes:
+      - ./data:/app/data
+      - ./dbt_project/target:/app/dbt_project/target
+    environment:
+      - DUCKDB_PATH=data/people_analytics.duckdb
+      - SEED_RANDOM_STATE=42
+      - NUM_EMPLOYEES=2000
+    networks:
+      - pa-network
+
+  dbt-docs:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: people-analytics-docs
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./dbt_project/target:/app/dbt_project/target
+    command: >
+      bash -c "cd dbt_project && dbt deps && dbt docs generate --target dev && dbt docs serve --port 8080 --host 0.0.0.0"
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+    networks:
+      - pa-network
+
+networks:
+  pa-network:
+    driver: bridge

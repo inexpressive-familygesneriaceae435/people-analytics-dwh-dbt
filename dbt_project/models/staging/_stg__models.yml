@@ -1,0 +1,86 @@
+version: 2
+
+models:
+  - name: stg_employees
+    description: "Cleaned and typed employee master data with derived tenure and age fields"
+    columns:
+      - name: employee_id
+        description: "Unique employee identifier (PK)"
+        data_tests:
+          - unique
+          - not_null
+      - name: full_name
+        description: "Concatenated first + last name"
+      - name: tenure_years
+        description: "Years of service (from hire_date to termination_date or current_date)"
+      - name: age
+        description: "Current age in years"
+      - name: is_voluntary_termination
+        description: "True if termination reason starts with 'Voluntary'"
+
+  - name: stg_absences
+    description: "Cleaned absence records with date parts extracted"
+    columns:
+      - name: absence_id
+        data_tests:
+          - unique
+          - not_null
+      - name: employee_id
+        data_tests:
+          - not_null
+
+  - name: stg_payroll
+    description: "Cleaned payroll records with total compensation calculated"
+    columns:
+      - name: payroll_id
+        data_tests:
+          - unique
+          - not_null
+      - name: total_compensation
+        description: "base_salary + overtime_pay + bonus"
+
+  - name: stg_promotions
+    description: "Cleaned promotion records with level change and lateral move flags"
+    columns:
+      - name: promotion_id
+        data_tests:
+          - unique
+          - not_null
+      - name: is_lateral_move
+        description: "True if department changed"
+      - name: level_change
+        description: "new_job_level - previous_job_level"
+
+  - name: stg_training
+    description: "Cleaned training records with completion flag"
+    columns:
+      - name: training_id
+        data_tests:
+          - unique
+          - not_null
+      - name: is_completed
+        description: "True if status = 'Completed'"
+
+  - name: stg_surveys
+    description: "Cleaned survey responses with quarter/year extracted"
+    columns:
+      - name: survey_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_recruiting
+    description: "Cleaned recruiting pipeline records with stage durations"
+    columns:
+      - name: application_id
+        data_tests:
+          - unique
+          - not_null
+      - name: days_to_screen
+        description: "Days from application to screening"
+      - name: days_to_interview
+        description: "Days from screening to interview"
+      - name: days_to_offer
+        description: "Days from interview to offer"
+      - name: days_to_hire
+        description: "Days from offer to hire (total time-to-fill)"

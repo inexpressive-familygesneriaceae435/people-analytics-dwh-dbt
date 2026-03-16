@@ -1,0 +1,125 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw People Analytics seed data (synthetic HR tables)"
+    schema: main
+    tables:
+      - name: raw_employees
+        description: "Master employee records with hire/termination lifecycle"
+        columns:
+          - name: employee_id
+            description: "Unique employee identifier"
+            data_tests:
+              - unique
+              - not_null
+          - name: hire_date
+            data_tests:
+              - not_null
+          - name: department
+            data_tests:
+              - not_null
+              - accepted_values:
+                  values: ["Engineering", "Sales", "Operations", "Customer Support", "Marketing", "Finance", "HR", "Product"]
+          - name: employment_type
+            data_tests:
+              - accepted_values:
+                  values: ["Full-Time", "Part-Time", "Contract"]
+          - name: gender
+            data_tests:
+              - accepted_values:
+                  values: ["Male", "Female", "Non-Binary"]
+
+      - name: raw_absences
+        description: "Employee absence events (sick, vacation, personal, etc.)"
+        columns:
+          - name: absence_id
+            data_tests:
+              - unique
+              - not_null
+          - name: employee_id
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'raw_employees')
+                  field: employee_id
+          - name: absence_type
+            data_tests:
+              - accepted_values:
+                  values: ["Sick Leave", "Vacation", "Personal", "Parental", "Bereavement", "Jury Duty"]
+
+      - name: raw_payroll
+        description: "Monthly payroll/compensation records"
+        columns:
+          - name: payroll_id
+            data_tests:
+              - unique
+              - not_null
+          - name: employee_id
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'raw_employees')
+                  field: employee_id
+
+      - name: raw_promotions
+        description: "Career progression and lateral move events"
+        columns:
+          - name: promotion_id
+            data_tests:
+              - unique
+              - not_null
+          - name: employee_id
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'raw_employees')
+                  field: employee_id
+
+      - name: raw_training
+        description: "Course enrollment and completion records"
+        columns:
+          - name: training_id
+            data_tests:
+              - unique
+              - not_null
+          - name: employee_id
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'raw_employees')
+                  field: employee_id
+          - name: status
+            data_tests:
+              - accepted_values:
+                  values: ["Completed", "In Progress", "Not Started", "Dropped"]
+
+      - name: raw_surveys
+        description: "Quarterly engagement and satisfaction survey responses"
+        columns:
+          - name: survey_id
+            data_tests:
+              - unique
+              - not_null
+          - name: employee_id
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'raw_employees')
+                  field: employee_id
+          - name: survey_type
+            data_tests:
+              - accepted_values:
+                  values: ["Q1 Pulse", "Q2 Pulse", "Q3 Pulse", "Annual Engagement"]
+
+      - name: raw_recruiting
+        description: "Full hiring funnel from application to hire/rejection"
+        columns:
+          - name: application_id
+            data_tests:
+              - unique
+              - not_null
+          - name: status
+            data_tests:
+              - accepted_values:
+                  values: ["Applied", "Screened", "Interviewed", "Offered", "Hired", "Rejected", "Withdrawn"]

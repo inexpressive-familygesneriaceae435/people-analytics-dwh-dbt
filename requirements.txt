@@ -1,0 +1,11 @@
+dbt-core>=1.7
+dbt-duckdb>=1.7
+duckdb>=0.10
+pandas>=2.1
+numpy>=1.25
+faker>=24.0
+loguru>=0.7
+python-dotenv>=1.0
+pydantic>=2.6
+pydantic-settings>=2.2
+pyarrow>=15.0

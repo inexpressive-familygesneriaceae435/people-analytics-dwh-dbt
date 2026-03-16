@@ -1,0 +1,100 @@
+version: 2
+
+models:
+  - name: dim_employees
+    description: >
+      Employee dimension combining master data, tenure/age/salary bands,
+      training completion, and latest survey scores. One row per employee.
+      This is the primary dimension for all People Analytics reporting.
+    columns:
+      - name: employee_id
+        description: "Unique employee identifier (PK)"
+        data_tests:
+          - unique
+          - not_null
+      - name: department
+        data_tests:
+          - not_null
+      - name: is_active
+        data_tests:
+          - not_null
+
+  - name: dim_departments
+    description: >
+      Department dimension with aggregated headcount, salary, tenure,
+      and composition metrics. One row per department.
+    columns:
+      - name: department
+        description: "Department name (PK)"
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_headcount_monthly
+    description: >
+      Monthly headcount snapshot by department.
+      Shows active employees, new hires, and terminations per month.
+      Core metric for workforce planning dashboards.
+    columns:
+      - name: report_month
+        data_tests:
+          - not_null
+      - name: department
+        data_tests:
+          - not_null
+
+  - name: fct_turnover_monthly
+    description: >
+      Monthly turnover rates by department.
+      Computes voluntary, involuntary, and total turnover rates
+      using the standard formula: terminations / avg_headcount * 100.
+    columns:
+      - name: report_month
+        data_tests:
+          - not_null
+
+  - name: fct_absenteeism_monthly
+    description: >
+      Monthly absenteeism KPIs by department.
+      Includes absence rate, Bradford factor, sick vs vacation split.
+    columns:
+      - name: report_month
+        data_tests:
+          - not_null
+
+  - name: fct_internal_mobility
+    description: >
+      Quarterly internal mobility metrics: promotions, lateral moves,
+      department transfers, avg salary change.
+    columns:
+      - name: report_quarter
+        data_tests:
+          - not_null
+
+  - name: fct_promotions_quarterly
+    description: >
+      Quarterly promotion rate and equity analysis by department,
+      gender, and tenure band. Enables promotion gap detection.
+    columns:
+      - name: report_year
+        data_tests:
+          - not_null
+
+  - name: fct_training_adoption
+    description: >
+      Annual training adoption metrics by department.
+      Hours per employee, completion rate, mandatory compliance,
+      category distribution.
+    columns:
+      - name: department
+        data_tests:
+          - not_null
+
+  - name: fct_recruiting_pipeline
+    description: >
+      Quarterly recruiting pipeline efficiency metrics.
+      Time-to-fill, source effectiveness, funnel conversion rates.
+    columns:
+      - name: report_quarter
+        data_tests:
+          - not_null
